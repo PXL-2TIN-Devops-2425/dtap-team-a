@@ -1,9 +1,34 @@
 pipeline {
     agent any
+    
+     environment {
+        DOCKERHUB_CREDENTIALS = credentials('docker')
+    }
+
     stages {
         stage('dtap production') {
             steps {
                 echo "good luck..."
+            }
+        }
+        stage('deploy prod'){
+            steps {
+                sshagent(['prodserver']){
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@3.87.153.127 docker pull $DOCKERHUB_CREDENTIALS_USR/testserver "
+                }
+            }
+        }
+        stage('start prod'){
+            steps{
+                sshagent(['prodserver']){
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@3.87.153.127 docker rm -f prodserver || true"
+                    sh "ssh -o StrictHostKeyChecking=no ubuntu@3.87.153.127 docker run -d -p 8080:80 --name prodserver $DOCKERHUB_CREDENTIALS_USR/testserver"
+                }
+            }
+        }
+        stage('test prod'){
+            steps{
+                sh "curl -I 3.87.153.127:80"
             }
         }
     }
