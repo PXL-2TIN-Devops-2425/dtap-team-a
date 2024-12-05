@@ -2,7 +2,8 @@ Vul onderstaande aan met de antwoorden op de vragen uit de readme.md file. Wil j
 opmaak met Markdown.
 
 a) Voor docker rechten te geven:
-  sudo usermod -aG docker ${USER}
-  su - ${USER}
+  sudo usermod -aG docker jenkins
+
+  su - jenkins (met deze kan je testen of het werkt)
 
 b)
