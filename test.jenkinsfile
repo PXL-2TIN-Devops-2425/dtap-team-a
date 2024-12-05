@@ -27,20 +27,20 @@ pipeline {
         }
         stage('Build artifact') {
             steps {
-                sh 'docker build -t lanzojacquespxl/testserver .'
+                sh 'docker build -t $DOCKERHUB_CREDENTIALS_USR/testserver .'
             }
         }
         stage('Push artifact'){
             steps {
                 sh 'docker login -u $DOCKERHUB_CREDENTIALS_USR -p $DOCKERHUB_CREDENTIALS_PSW'
-                sh 'docker push lanzojacquespxl/testserver'
+                sh 'docker push $DOCKERHUB_CREDENTIALS_USR/testserver'
             }
         }
         stage('deployment'){
             steps {
-                sh 'docker pull lanzojacquespxl/testserver'
+                sh 'docker pull $DOCKERHUB_CREDENTIALS_USR/testserver'
                 sh 'docker rm -f testserver || true'
-                sh 'docker run -d -p 3000:3000 --name testserver lanzojacquespxl/testserver'
+                sh 'docker run -d -p 3000:3000 --name testserver $DOCKERHUB_CREDENTIALS_USR/testserver'
             }
         }
     }
